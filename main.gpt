@@ -24,11 +24,18 @@ done
 Name: configure-environment
 Description: Configures the environment by loading helper functions and setting up necessary configurations.
 Tools: sys.exec, sys.find, sys.read, sys.write
-
+Credentials: kcli-credential-tool.gpt as envVars
 Script: |
   #!/bin/bash
   echo "Starting environment configuration..."
-  bash configure_environment.sh
+  source scripts/helper_functions.sh
+  if [ -z $TARGET_SERVER ];
+  then 
+      echo "TARGET_SERVER variable is not set"
+      exit 1
+  else
+      echo "TARGET_SERVER is set to $TARGET_SERVER" | tee results.txt
+  fi
 ---
 Name: test-env-vars
 Description: Tests if the environment variables are loaded correctly.
