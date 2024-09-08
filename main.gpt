@@ -1,0 +1,48 @@
+Name: KCLI GPT Agent
+Context: learn-kcli
+Credentials: kcli-credential-tool.gpt as envVars
+Chat: true
+Tools: sys.exec, sys.find, sys.read, sys.write, configure-environment,  test-env-vars
+You are an assistant for the KCLI.
+Rules 
+1. Use kcli to interact with the machine
+---
+Name: learn-kcli
+Description: A tool to help you learn gcp cli
+#!/bin/bash
+echo "The following is the help text for the kcli CLI and some of its sub-commands. Use these when figuring out how to automate tasks."
+
+CMDS="kubectl kcli ansible-playbook"
+echo 'The additional CLI commands are available locally, use the `sudo` and `exec` tool to invoke them:'
+for i in $CMDS; do
+	if [ -e "$(command -v $i)" ]; then
+    	echo '  ' $i
+	fi
+done
+
+---
+Name: configure-environment
+Description: Configures the environment by loading helper functions and setting up necessary configurations.
+Tools: sys.exec, sys.find, sys.read, sys.write
+
+Script: |
+  #!/bin/bash
+  echo "Starting environment configuration..."
+  bash configure_environment.sh
+---
+Name: test-env-vars
+Description: Tests if the environment variables are loaded correctly.
+Tools: sys.exec
+
+Script: |
+  #!/bin/bash
+  echo "Testing environment variables..."
+  
+  # Define the environment variable names you want to test
+  env_var_names=("KCLI_SAMPLES_DIR" "NET_NAME" "INVENTORY" "ANSIBLE_VAULT_FILE" "ANSIBLE_ALL_VARIABLES")
+  
+  # Print the values of the environment variables
+  for var_name in "${env_var_names[@]}"; do
+      echo "$var_name: ${!var_name}"
+  done
+
